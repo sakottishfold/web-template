@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ApiStatus } from "@/components/api-status";
-import { Button } from "@/components/ui/button";
+import { SignOutButton } from "@/components/sign-out-button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getSession } from "@/lib/session";
 
@@ -22,13 +23,19 @@ export default async function Home() {
         <div className="flex items-center gap-3">
           <ApiStatus />
           {session ? (
-            <Button size="sm" variant="outline" render={<Link href="/dashboard" />}>
-              Dashboard
-            </Button>
+            <>
+              <Link
+                href="/dashboard"
+                className={buttonVariants({ size: "sm", variant: "outline" })}
+              >
+                Dashboard
+              </Link>
+              <SignOutButton size="sm" />
+            </>
           ) : (
-            <Button size="sm" variant="outline" render={<Link href="/login" />}>
+            <Link href="/login" className={buttonVariants({ size: "sm", variant: "outline" })}>
               Sign in
-            </Button>
+            </Link>
           )}
         </div>
       </div>
@@ -55,15 +62,17 @@ export default async function Home() {
       </Card>
 
       <div className="flex gap-3">
-        <Button render={<a href="https://hono.dev" target="_blank" rel="noreferrer" />}>
+        <a href="https://hono.dev" target="_blank" rel="noreferrer" className={buttonVariants()}>
           Hono docs
-        </Button>
-        <Button
-          variant="outline"
-          render={<a href="https://orm.drizzle.team" target="_blank" rel="noreferrer" />}
+        </a>
+        <a
+          href="https://orm.drizzle.team"
+          target="_blank"
+          rel="noreferrer"
+          className={buttonVariants({ variant: "outline" })}
         >
           Drizzle docs
-        </Button>
+        </a>
       </div>
     </main>
   );
