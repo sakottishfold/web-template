@@ -60,7 +60,7 @@
     "oxfmt": "^0.54.0",
     "oxlint": "^1.69.0",
     "tailwindcss": "^4",
-    "typescript": "^5",
+    "typescript": "^6",
     "vitest": "^4.1.8"
   }
 }
