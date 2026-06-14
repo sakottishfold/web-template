@@ -1,36 +1,122 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# web-template
 
-## Getting Started
+Type-safe full-stack starter. A single Next.js app with a co-located Hono API,
+end-to-end type safety via Hono RPC, Drizzle ORM, and Better Auth.
 
-First, run the development server:
+## Stack
+
+| Layer         | Choice                                                           |
+| ------------- | ---------------------------------------------------------------- |
+| Tooling       | pnpm · **oxlint** · **oxfmt** · **vitest** · **knip** · lefthook |
+| Frontend      | Next.js 16 (App Router) · React 19 · Tailwind v4 · shadcn/ui     |
+| Backend       | Hono (mounted at `/api`, RPC client) · runs on Node runtime      |
+| Database      | Drizzle ORM · PostgreSQL (postgres-js)                           |
+| Auth          | Better Auth (email/password, self-hosted)                        |
+| Validation    | Zod · drizzle-zod · `@t3-oss/env-nextjs` (typed env)             |
+| Data (client) | TanStack Query                                                   |
+
+### Why these (vs the alternatives)
+
+- **Hono over NestJS** — lightweight, runs anywhere, and its RPC client
+  (`hono/client`) gives the frontend fully-typed API calls with zero codegen.
+- **shadcn/ui over daisyUI** — you own the component code (Base UI primitives),
+  which suits customizing heavily against a design system.
+- **Better Auth** — TS-first, framework-agnostic, first-class Drizzle + Hono
+  support, no vendor lock-in.
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+cp .env.example .env          # then fill in the values
+# generate a secret: openssl rand -base64 32
+
+# create the schema in your database
+pnpm db:push                  # or: pnpm db:generate && pnpm db:migrate
+
+pnpm dev                      # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+You need a PostgreSQL database. Locally:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+docker run -d --name app-db -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=app -p 5432:5432 postgres:17
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+…or use a managed Postgres (Neon / Supabase) and paste its connection string
+into `DATABASE_URL`.
 
-## Learn More
+## Project layout
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├─ app/
+│  ├─ api/[[...route]]/route.ts   # Hono mounted into Next (Node runtime)
+│  ├─ login/                      # email/password sign-in + sign-up
+│  ├─ layout.tsx                  # providers + toaster
+│  └─ page.tsx                    # session-aware landing page
+├─ server/
+│  ├─ index.ts                    # Hono app + AppType (exported for RPC)
+│  └─ routes/posts.ts             # example resource
+├─ db/
+│  ├─ schema.ts                   # Drizzle tables + drizzle-zod schemas
+│  └─ index.ts                    # db client
+├─ lib/
+│  ├─ auth.ts                     # Better Auth server config
+│  ├─ auth-client.ts              # Better Auth browser client
+│  ├─ session.ts                  # getSession() server helper
+│  ├─ api.ts                      # typed Hono RPC client
+│  └─ env.ts                      # validated environment variables
+├─ components/
+│  ├─ ui/                         # shadcn/ui components
+│  ├─ providers.tsx               # TanStack Query provider
+│  └─ api-status.tsx              # demo: RPC + TanStack Query
+└─ test/setup.ts
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### End-to-end type safety
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The Hono app exports its type; the client consumes it:
 
-## Deploy on Vercel
+```ts
+// src/server/index.ts
+export type AppType = typeof routes;
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+// anywhere on the client
+import { api } from "@/lib/api";
+const res = await api.api.posts.$get(); // fully typed response
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Scripts
+
+| Command              | What it does                                       |
+| -------------------- | -------------------------------------------------- |
+| `pnpm dev`           | Start the dev server                               |
+| `pnpm build`         | Production build                                   |
+| `pnpm check`         | lint + format check + typecheck + knip + tests     |
+| `pnpm lint`          | oxlint                                             |
+| `pnpm format`        | oxfmt (write)                                      |
+| `pnpm typecheck`     | `tsc --noEmit`                                     |
+| `pnpm test`          | vitest                                             |
+| `pnpm knip`          | find unused files / deps / exports                 |
+| `pnpm db:generate`   | generate SQL migrations from the schema            |
+| `pnpm db:migrate`    | apply migrations                                   |
+| `pnpm db:push`       | push the schema directly (dev)                     |
+| `pnpm db:studio`     | open Drizzle Studio                                |
+| `pnpm auth:generate` | regenerate Better Auth tables after config changes |
+
+## Git hooks (lefthook)
+
+- **pre-commit** — oxlint + oxfmt on staged files
+- **pre-push** — typecheck + tests
+
+Run `pnpm lefthook install` once after cloning (the `prepare` script does this
+automatically on `pnpm install`).
+
+## Notes
+
+- Set `SKIP_ENV_VALIDATION=1` to build/lint without real secrets (CI, Docker).
+- The Hono API runs on the Node.js runtime (Fluid Compute on Vercel) — full
+  Node APIs are available.
+- Replace the example `posts` table/route and the landing page with your own.
