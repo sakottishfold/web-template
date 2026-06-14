@@ -37,11 +37,12 @@ pnpm db:push                  # or: pnpm db:generate && pnpm db:migrate
 pnpm dev                      # http://localhost:3000
 ```
 
-You need a PostgreSQL database. Locally:
+You need a PostgreSQL database. Locally, a `compose.yml` is included:
 
 ```bash
-docker run -d --name app-db -e POSTGRES_PASSWORD=postgres \
-  -e POSTGRES_DB=app -p 5432:5432 postgres:17
+docker compose up -d          # start Postgres (matches the default DATABASE_URL)
+pnpm db:migrate               # apply migrations
+docker compose down           # stop (data persists; add -v to wipe)
 ```
 
 …or use a managed Postgres (Neon / Supabase) and paste its connection string

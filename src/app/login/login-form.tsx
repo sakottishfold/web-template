@@ -34,7 +34,7 @@ export function LoginForm() {
       toast.error(error.message ?? "Something went wrong");
       return;
     }
-    router.push("/");
+    router.push("/dashboard");
   }
 
   const isSignUp = mode === "sign-up";

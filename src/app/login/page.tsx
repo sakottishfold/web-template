@@ -4,7 +4,7 @@ import { LoginForm } from "./login-form";
 
 export default async function LoginPage() {
   const session = await getSession();
-  if (session) redirect("/");
+  if (session) redirect("/dashboard");
 
   return (
     <main className="flex flex-1 items-center justify-center px-6 py-16">

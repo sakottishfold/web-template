@@ -25,7 +25,9 @@
 - 環境変数は必ず `src/lib/env.ts`(t3-env)経由。`process.env` 直参照禁止。`.env.example` も更新。
 - API は Hono(`src/server/`)。ルートはチェーンして `AppType` に型を流す。クライアントは `src/lib/api.ts` の RPC。
 - DB は Drizzle。schema は `src/db/schema.ts`。`drizzle-zod` で Zod を導出し API バリデーションに使う。
-- shadcn は base-nova スタイル。`asChild` ではなく **`render` prop**(例: `<Button render={<Link href="/x" />}>`)。
+- shadcn は base-nova スタイル。要素を差し替えるときは `asChild` ではなく **`render` prop**。
+  - ただし **`<Button>` はアクション(本物の `<button>`)専用**。`render` で `<Link>` / `<a>` を渡すと Base UI が `nativeButton` 警告を出すか `role="button"` を付けてリンクの意味論を壊す。
+  - **ボタン見た目のナビゲーションは `buttonVariants()` を `<Link>` / `<a>` の `className` に当てる**(例: `<Link href="/x" className={buttonVariants({ variant: "outline" })}>`)。`role="link"` が保たれる。
 - スキーマ変更 → migration(`pnpm db:generate`)+ 該当 spec を更新。
 
 ## レイヤー境界(lint で強制)
