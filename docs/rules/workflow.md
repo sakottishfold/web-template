@@ -31,5 +31,5 @@
 
 ## preflight を飛ばさない
 
-- 作業前に該当 `docs/rules/*` と関連 doc(PRD/spec/design/直近ADR)を読む。
+- 作業前に該当 `docs/rules/*` と関連 doc(PROJECT/spec/design/直近ADR)を読む。
 - コンテキスト無しに書くとパターンをフォークし、サイレントドリフトする。

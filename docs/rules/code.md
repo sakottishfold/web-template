@@ -28,6 +28,16 @@
 - shadcn は base-nova スタイル。`asChild` ではなく **`render` prop**(例: `<Button render={<Link href="/x" />}>`)。
 - スキーマ変更 → migration(`pnpm db:generate`)+ 該当 spec を更新。
 
+## レイヤー境界(lint で強制)
+
+- UI(`src/app/**` / `src/components/**`)は `@/db` / `@/server` を**直接 import しない**(oxlint で error)。データは `@/lib/api`(RPC)経由、セッションは `@/lib/session` 経由。
+- 例外は API マウント `src/app/api/[[...route]]/route.ts` のみ(`@/server` を import 可)。
+
+## 認可(auth-by-construction)
+
+- 保護されたページ / Server Action: `requireSession()`(`@/lib/session`)を使う。手書きの `if (!session) redirect()` を散らさない ── 認可忘れを構造的に防ぐ。
+- 保護された API ルート: `authMiddleware`(`src/server/middleware/auth.ts`)を route グループに `.use()` で1回かける。以降のハンドラは `c.get("user")` が保証される。各ハンドラで session を再チェックしない。
+
 ## 契約とprops
 
 - 関数/コンポーネントの「不正入力をどちらが処理するか」(防御 vs 呼び出し元信頼)を意識的に選び、コメント/型に明示する。

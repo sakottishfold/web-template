@@ -19,6 +19,7 @@
 - コントラスト比 WCAG AA 以上。
 - インタラクティブ要素は role/label を持ち、キーボード操作可能。
 - shadcn(Base UI)のプリミティブを土台にし、a11y を自前で壊さない。
+- **アイコンのみのボタン/リンクは `aria-label` を明示**(render prop 経由は a11y lint が中身を追えないため。`quality.md` 参照)。
 
 ## トークン
 

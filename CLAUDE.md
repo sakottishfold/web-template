@@ -7,21 +7,21 @@
 ## 開発の入口
 
 複数ステップにまたがる開発は **`dev` スキル**から始める。`dev` が
-onboarding→prd→spec→design→feature を正しい順で駆動し、要所2点(spec 確定・実装着手前)だけ確認する。
+onboarding→(spec)→design→feature→ship を正しい順で駆動し、要所2点(spec 確定・実装着手前)だけ確認する。
+`spec` / `design` は条件付き(軽微な単一レイヤー変更は `feature` 直行)。
 ハーネス全体の説明は `.claude/skills/README.md`。
 
 ## どこで何を見つけるか
 
-| 知りたいこと                               | 場所                    |
-| ------------------------------------------ | ----------------------- |
-| アプリの色(名前・デザイン原則・トーン)     | `docs/PROJECT.md`       |
-| 製品要件(vision / ペルソナ / アンチゴール) | `docs/prd/PRD.md`       |
-| 機能の技術仕様                             | `docs/spec/NNNN-*.md`   |
-| 機能のデザイン仕様                         | `docs/design/NNNN-*.md` |
-| なぜその決定をしたか                       | `docs/adr/NNNN-*.md`    |
-| プロジェクトルール                         | `docs/rules/*.md`       |
-| 次にやること(統合TODO)                     | `docs/NEXT-ACTIONS.md`  |
-| スタック / セットアップ                    | `README.md`             |
+| 知りたいこと                                                              | 場所                    |
+| ------------------------------------------------------------------------- | ----------------------- |
+| アプリの色 + 製品要件(名前・ペルソナ・アンチゴール・デザイン原則・トーン) | `docs/PROJECT.md`       |
+| 機能の技術仕様(条件付き)                                                  | `docs/spec/NNNN-*.md`   |
+| 機能のデザイン仕様                                                        | `docs/design/NNNN-*.md` |
+| なぜその決定をしたか                                                      | `docs/adr/NNNN-*.md`    |
+| プロジェクトルール                                                        | `docs/rules/*.md`       |
+| 次にやること(統合TODO)                                                    | `docs/NEXT-ACTIONS.md`  |
+| スタック / セットアップ                                                   | `README.md`             |
 
 ## 着手前に読む
 

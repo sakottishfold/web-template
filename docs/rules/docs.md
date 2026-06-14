@@ -1,6 +1,6 @@
 # Docs rules
 
-ドキュメント運用ルール。`prd` / `spec` / `adr` / `dev` が読む。
+ドキュメント運用ルール。`spec` / `adr` / `dev` が読む。
 
 ## ADR は append-only
 
@@ -16,7 +16,7 @@
 ## 正典と日常参照を分ける
 
 - 決定そのもの = `docs/adr/`(append-only)
-- 製品の意図 = `docs/prd/PRD.md`(育てる)
+- 製品の意図(vision / アンチゴール)= `docs/PROJECT.md`(育てる)
 - 美意識の日常参照 = `docs/rules/design.md` + `docs/PROJECT.md`
 - 1つの doc で全部を兼ねない。
 
