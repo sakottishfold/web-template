@@ -22,7 +22,9 @@ export default async function Home() {
         <div className="flex items-center gap-3">
           <ApiStatus />
           {session ? (
-            <span className="text-sm text-muted-foreground">{session.user.email}</span>
+            <Button size="sm" variant="outline" render={<Link href="/dashboard" />}>
+              Dashboard
+            </Button>
           ) : (
             <Button size="sm" variant="outline" render={<Link href="/login" />}>
               Sign in

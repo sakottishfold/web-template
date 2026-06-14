@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "unicorn", "import"],
+  "plugins": ["react", "typescript", "unicorn", "import", "jsx-a11y"],
   "env": {
     "browser": true,
     "node": true,
@@ -14,7 +14,28 @@
   "rules": {
     "no-console": "warn",
     "react/react-in-jsx-scope": "off",
-    "import/no-unassigned-import": "off"
+    "import/no-unassigned-import": "off",
+    "jsx-a11y/anchor-has-content": "off",
+    "jsx-a11y/control-has-associated-label": "off"
   },
-  "ignorePatterns": [".next/**", "node_modules/**", "drizzle/**", "src/components/ui/**"]
+  "ignorePatterns": [".next/**", "node_modules/**", "drizzle/**", "src/components/ui/**"],
+  "overrides": [
+    {
+      "files": ["src/app/**", "src/components/**"],
+      "excludeFiles": ["src/app/api/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["@/db", "@/db/*", "@/server", "@/server/*"],
+                "message": "UI 層は DB / サーバ内部を直接 import しない。データは @/lib/api(RPC)経由、セッションは @/lib/session 経由で。"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
 }
